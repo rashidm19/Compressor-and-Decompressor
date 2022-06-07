@@ -74,11 +74,6 @@ class QuadTreeNodeEmpty(QuadTreeNode):
         """
         Convert to a properly formatted empty list
         """
-        # Note: Normally, this method should return an empty list or a list of
-        # empty lists. However, when the tree is mirrored, this returned list
-        # might not be empty and may contain the value 255 in it. This will
-        # cause the decompressed image to have unexpected white pixels.
-        # You may ignore this caveat for the purpose of this assignment.
         return [[255] * width for _ in range(height)]
 
     def preorder(self) -> str:
@@ -167,12 +162,6 @@ class QuadTreeNodeInternal(QuadTreeNode):
     def convert_to_pixels(self, width: int, height: int) -> List[List[int]]:
         """
         Return the pixels represented by this node as a 2D list.
-
-        You'll need to recursively get the pixels for the quadrants and
-        combine them together.
-
-        Make sure you get the sizes (width/height) of the quadrants correct!
-        Read the docstring for split_quadrants() for more info.
         """
         def union_quadrants_vertically(bottom_quadrant : List[List[int]], top_quadrant : List[List[int]]) -> List[List[int]]:
             res = []
@@ -186,7 +175,7 @@ class QuadTreeNodeInternal(QuadTreeNode):
                 res.append(left_quadrant[i]+right_quadrant[i])
             return res
 
-        # children: bottom - left, bottom - right, top - left, top - right
+
         w0 = width // 2
         h0 = height // 2
 
@@ -291,9 +280,6 @@ class QuadTree:
     def build_quad_tree(self, pixels: List[List[int]],
                         mirror: bool = False) -> None:
         """
-        Build a quad tree representing all pixels in <pixels>
-        and assign its root to self.root
-
         <mirror> indicates whether the compressed image should be mirrored.
         See the assignment handout for examples of how mirroring works.
         """
@@ -307,16 +293,8 @@ class QuadTree:
 
     def _build_tree_helper(self, pixels: List[List[int]]) -> QuadTreeNode:
         """
-        Build a quad tree representing all pixels in <pixels>
+        quad tree representing all pixels in <pixels>
         and return the root
-
-        Note that self.loss_level should affect the building of the tree.
-        This method is where the compression happens.
-
-        IMPORTANT: the condition for compressing a quadrant is the standard
-        deviation being __LESS THAN OR EQUAL TO__ the loss level. You must
-        implement this condition exactly; otherwise, you could fail some
-        test cases unexpectedly.
         """
         if len(pixels) == 0 or len(pixels[0])==0:
             return QuadTreeNodeEmpty()
@@ -340,10 +318,6 @@ class QuadTree:
         Precondition: size of <pixels> is at least 1x1
         Returns a list of four lists of lists, correspoding to the quadrants in
         the following order: bottom-left, bottom-right, top-left, top-right
-
-        IMPORTANT: when dividing an odd number of entries, the smaller half
-        must be the left half or the bottom half, i.e., the half with lower
-        indices.
 
         Postcondition: the size of the returned list must be 4
 
